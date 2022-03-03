@@ -1,0 +1,40 @@
+name: Build and deploy
+
+on:
+ push: 
+  branches: [ development ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@development
+      - name: Install dependencies
+        run: npm ci
+      - name: Build dependencies
+        run: npm run build
+      - name: Archive production artifact
+        uses: actions/upload-artifact@development
+        with:
+          name: .next
+          path: .next
+  deploy:        
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@development
+      - name: Download artifact
+        uses: actions/download-artifact@development
+        with:
+          name: .next
+          path: .next
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        
