@@ -42,6 +42,8 @@ const Home = ({ posts } : {posts:any}) => {
         })}
       </div>
 
+      <div>test test</div>
+
     </>
   )
 }
